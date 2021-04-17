@@ -41,7 +41,7 @@ void cipherCrypt(char msg[], int key)
 
 void daemonLurr()
 {
-	pid_t pid, sid;
+    pid_t pid, sid;
     pid = fork();
     if(pid < 0)
     {
@@ -94,7 +94,6 @@ void createDir(char awowo[])
 void downloadPic(char awowo[])
 {
     int statuslur;
-    char link[100];
     pid_t child_id;
     child_id = fork();
     if(child_id<0)
@@ -111,6 +110,7 @@ void downloadPic(char awowo[])
             time (&rawtime);
             timenow = localtime(&rawtime);
             char picname[100];
+	    char link[100];
             strftime(picname, 100, "%Y-%m-%d_%H:%M:%S", timenow);
             sprintf(link , "https://picsum.photos/%ld", (rawtime % 1000) + 50);
             pid_t child_id_pic;
