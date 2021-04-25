@@ -133,8 +133,6 @@ while (wait(&status11) > 0);
      char *arg[] = {"rm", "-r", "./MUSIK", "./FILM", "./FOTO", NULL};
      execv("/bin/rm", arg);
  }
-while (wait(&status11) > 0);
- exit(0);
 ```
 
 ## Soal 2 ##
