@@ -102,6 +102,7 @@ while (wait(&status8) > 0);
 ```
 #### Soal 1e. ####
 1. Diminta untuk menjalankan semua hal diatas secara otomatis 6 jam sebelum waktu ulang tahun dari Stevany.
+Ulang Tahun Stevany : 09 April Pukul 22.22 WIB
 ```
 if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 16 && t->tm_min == 22 && t->tm_sec == 0){
 ...
@@ -109,6 +110,32 @@ if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 16 && t->tm_min == 22 &
 }
 ```
 #### Soal 1f. ####
+1. Pada waktu ulang tahun Stevany, semua folder akan di zip dengan format nama Lopyu_Stevany.zip
+Ulang Tahun Stevany : 09 April Pukul 22.22 WIB
+```
+if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 22 && t->tm_min == 22 && t->tm_sec == 0){
+  child14 = fork();
+  if (child14 == 0){
+      child15 = fork();
+      if (child15 < 0) exit(0);
+      if (child15 == 0){
+          char *arg[] = {"zip", "-q", "-rm", "Lopyu_Stevany.zip", "./Musyik", "./Fylm", "./Pyoto", NULL};
+          execv("/usr/bin/zip", arg);
+      }
+  }
+```
+2. Semua folder akan di delete sehingga hanya menyisakan file Lopyu_Stevany.zip
+```
+while (wait(&status11) > 0);
+ child16 = fork();
+ if (child16 < 0) exit(0);
+ if (child16 == 0){
+     char *arg[] = {"rm", "-r", "./MUSIK", "./FILM", "./FOTO", NULL};
+     execv("/bin/rm", arg);
+ }
+while (wait(&status11) > 0);
+ exit(0);
+```
 
 ## Soal 2 ##
 ### Pengerjaan ###
