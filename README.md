@@ -8,6 +8,22 @@
 ## Soal 2 ##
 ### Pengerjaan ###
 #### Soal 2a. ####
+1. Diminta untuk mengekstrak zip ke yang diberikan kedalam "/home/[user]/modul2/petshop" dan menghapus folder-folder yang tidak perlukan
+2. Fungsi yang dijalankan:
+```
+if (child_id == 0) {
+    // this is child
+
+    char *argv[] = {"mkdir", "-p", "petshop", NULL};
+    execv("/bin/mkdir", argv);
+    
+    
+  }
+  
+  while ((wait(&status)) > 0);
+  char *argv2[] = {"unzip", "pets.zip", "-d", "/home/naufaldillah/modul2/petshop", "-x", "*apex_cheats/*", "*musics/*", "*unimportant_files/*", NULL};
+  execv("/bin/unzip", argv2);
+```
 
 ## Soal 3 ##
 ### Pengerjaan ###
