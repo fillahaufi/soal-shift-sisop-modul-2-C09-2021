@@ -26,9 +26,55 @@ child3 = fork();
  }
 ```
 #### Soal 1b. ####
-
+1. Diminta untuk mendownload Musik, Film dan Foto dari link yang telah disediakan.
+```
+while (wait(&status) > 0);
+ child4 = fork();
+ if (child4 < 0) exit(0);
+ if (child4 == 0){
+     char *arg[] = {"wget", "--no-check-certificate", "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download", "-O", "Musik_for_Stevany.zip", "-o", "/dev/null", NULL};
+     execv("/usr/bin/wget", arg);
+ }
+while (wait(&status1) > 0);
+ child5 = fork();
+ if (child5 < 0) exit(0);
+ if (child5 == 0){
+     char *arg[] = {"wget", "--no-check-certificate", "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download", "-O", "Film_for_Stevany.zip", "-o", "/dev/null", NULL};
+     execv("/usr/bin/wget", arg);
+ }
+while (wait(&status2) > 0);
+ child6 = fork();
+ if (child6 < 0) exit(0);
+ if (child6 == 0){
+     char *arg[] = {"wget", "--no-check-certificate", "https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download", "-O", "Foto_for_Stevany.zip", "-o", "/dev/null", NULL};
+     execv("/usr/bin/wget", arg);
+ }
+```
 #### Soal 1c. ####
-
+1. Diminta agar folder yang dibuat tidak berisikan zip, maka perlu untuk meng-extract terlebih dahulu.
+```
+while (wait(&status3) > 0);
+ child7 = fork();
+ if (child7 < 0) exit(0);
+ if (child7 == 0){
+     char *arg[] = {"unzip", "-o", "-q", "./Musik_for_Stevany.zip", NULL};
+     execv("/usr/bin/unzip", arg);
+ }
+while (wait(&status4) > 0);
+ child8 = fork();
+ if (child8 < 0)exit(0);
+ if (child8 == 0){
+     char *arg[] = {"unzip", "-o", "-q", "./Film_for_Stevany.zip", NULL};
+     execv("/usr/bin/unzip", arg);
+ }
+while (wait(&status5) > 0);
+ child9 = fork();
+ if (child9 < 0) exit(0);
+ if (child9 == 0){
+     char *arg[] = {"unzip", "-o", "-q", "./Foto_for_Stevany.zip", NULL};
+     execv("/usr/bin/unzip", arg);
+ }
+```
 #### Soal 1d. ####
 
 #### Soal 1e. ####
