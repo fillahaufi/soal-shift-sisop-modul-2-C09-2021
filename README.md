@@ -9,7 +9,7 @@
 ### Pengerjaan ###
 #### Soal 2a. ####
 1. Diminta untuk mengekstrak zip ke yang diberikan kedalam "/home/[user]/modul2/petshop" dan menghapus folder-folder yang tidak perlukan
-2. Fungsi yang dijalankan:
+2. Dibuat dulu folder petshop jika belum ada, kemudian unzip folder pets.zip dengan pengecualian folder apex_cheats, musics, dan unimportant_files:
 ```
 if (child_id == 0) {
     // this is child
@@ -24,6 +24,50 @@ if (child_id == 0) {
   char *argv2[] = {"unzip", "pets.zip", "-d", "/home/naufaldillah/modul2/petshop", "-x", "*apex_cheats/*", "*musics/*", "*unimportant_files/*", NULL};
   execv("/bin/unzip", argv2);
 ```
+3. Dokumentasi:
+![Ubuntu  Running  - Oracle VM VirtualBox 4_25_2021 2_45_15 PM](https://user-images.githubusercontent.com/68325900/115985444-14792480-a5d6-11eb-907a-05f4dd79f1ae.png)
+
+#### Soal 2b. ####
+1. Diminta untuk membuat folder setiap jenis peliharaan yang ada di dalam zip
+2. Siapkan dulu struct data untuk mengambil file
+```
+struct dirent *de;
+
+DIR *dr = opendir("/modul2/petshop");
+```
+3. Copy name file yang ada di folder lalu dipisahkan dengan strtok dan ambil nama peliharaan. Kemudian buat folder dengan nama peliharaan:
+```
+while((de = readdir(dr)) != NULL)
+  {
+    printf("Folder berhasil dibuat\n");
+    strcpy(animal_name_folder, "/modul2/petshop");
+    strcat(animal_name_folder, strtok(de->d_name, ";"));
+    
+    child_id2 = fork();
+    
+    if (child_id2 == 0) {
+    	char *argv4[] = {"mkdir", "-p", animal_name_folder, NULL};
+    	execv("/bin/mkdir", argv4);
+    }
+    	
+    char *argv5[] = {"touch", "Keterangan.txt", NULL};
+    execv("usr/bin/touch", argv5);
+  }
+```
+#### Soal 2c. ####
+1. Diminta untuk memindahkan foto ke folder dengan kategori yang sesuai kemudian direnam dengan nama peliharaan
+
+#### Soal 2d. ####
+1. Diminta untuk memindahkan foto ke masing-masing kategori yang sesuai jika terdapat lebih dari satu peliharaan dalam foto
+
+#### Soal 2e. ####
+1. Diminta untuk membuat file "keterangan.txt" yang berisi nama dan umur semuar peliharaan dalam folder tersebut.
+2. Fungsi yang dijalankan:
+```
+  char *argv5[] = {"touch", "Keterangan.txt", NULL};
+  execv("usr/bin/touch", argv5);
+```
+
 
 ## Soal 3 ##
 ### Pengerjaan ###
