@@ -4,6 +4,36 @@
 ## Soal 1 ##
 ### Pengerjaan ###
 #### Soal 1a. ####
+1. Diminta untuk membuat nama folder sesuai dengan ketentuan yaitu Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg.
+```
+child1 = fork();
+ if (child1 < 0) exit(0);
+ if (child1 == 0){
+     char *argv[] = {"mkdir", "-p", "/home/fajrinam/modul2/soal1/Musyik", NULL};
+     execv("/bin/mkdir", argv);
+ }
+child2 = fork();
+ if (child2 < 0) exit(0);
+ if (child2 == 0){
+     char *argv[] = {"mkdir", "-p", "/home/fajrinam/modul2/soal1/Fylm", NULL};
+     execv("/bin/mkdir", argv);
+ }
+child3 = fork();
+ if (child3 < 0) exit(0);
+ if (child3 == 0){
+     char *argv[] = {"mkdir", "-p", "/home/fajrinam/modul2/soal1/Pyoto", NULL};
+     execv("/bin/mkdir", argv);
+ }
+```
+#### Soal 1b. ####
+
+#### Soal 1c. ####
+
+#### Soal 1d. ####
+
+#### Soal 1e. ####
+
+#### Soal 1f. ####
 
 ## Soal 2 ##
 ### Pengerjaan ###
