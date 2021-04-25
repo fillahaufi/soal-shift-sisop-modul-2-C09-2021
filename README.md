@@ -184,11 +184,15 @@ while((de = readdir(dr)) != NULL)
     execv("usr/bin/touch", argv5);
   }
 ```
+3. Kendala: Kode tidak bisa dijalankan
+
 #### Soal 2c. ####
 1. Diminta untuk memindahkan foto ke folder dengan kategori yang sesuai kemudian direnam dengan nama peliharaan
+2. Kendala: Mengalami masalah dalam pengerjaan
 
-#### Soal 2d. ####
+#### Soaal 2d. ####
 1. Diminta untuk memindahkan foto ke masing-masing kategori yang sesuai jika terdapat lebih dari satu peliharaan dalam foto
+2. Kendala: Mengalami masalah dalam pengerjaan
 
 #### Soal 2e. ####
 1. Diminta untuk membuat file "keterangan.txt" yang berisi nama dan umur semuar peliharaan dalam folder tersebut.
@@ -197,6 +201,7 @@ while((de = readdir(dr)) != NULL)
   char *argv5[] = {"touch", "Keterangan.txt", NULL};
   execv("usr/bin/touch", argv5);
 ```
+3. Kendala: Kode tidak bisa dijalankan
 
 
 ## Soal 3 ##
