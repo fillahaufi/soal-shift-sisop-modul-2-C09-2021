@@ -76,9 +76,38 @@ while (wait(&status5) > 0);
  }
 ```
 #### Soal 1d. ####
-
+1. Diminta hanya memindahkan file ke dalam folder yang telah dibuat sebelumnya.
+```
+while (wait(&status6) > 0);
+ child10 = fork();
+ if (child10 < 0) exit(0);
+ if (child10 == 0){
+     char *argv[] = {"find", "./MUSIK", "-mindepth", "1", "-type", "f", "-exec", "mv", "-t", "./Musyik", "{}", "+", NULL};
+     execv("/usr/bin/find", argv);
+ }
+while (wait(&status7) > 0);
+ child11 = fork();
+ if (child11 < 0) exit(0);
+ if (child11 == 0){
+     char *argv[] = {"find", "./FILM", "-mindepth", "1", "-type", "f", "-exec", "mv", "-t", "./Fylm", "{}", "+", NULL};
+     execv("/usr/bin/find", argv);
+ }
+while (wait(&status8) > 0);
+ child12 = fork();
+ if (child12 < 0) exit(0);
+ if (child12 == 0) {
+     char *argv[] = {"find", "./FOTO", "-mindepth", "1", "-type", "f", "-exec", "mv", "-t", "./Pyoto", "{}", "+", NULL};
+     execv("/usr/bin/find", argv);
+ }
+```
 #### Soal 1e. ####
-
+1. Diminta untuk menjalankan semua hal diatas secara otomatis 6 jam sebelum waktu ulang tahun dari Stevany.
+```
+if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 16 && t->tm_min == 22 && t->tm_sec == 0){
+...
+...
+}
+```
 #### Soal 1f. ####
 
 ## Soal 2 ##
