@@ -111,7 +111,7 @@ if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 16 && t->tm_min == 22 &
 ```
 #### Soal 1f. ####
 1. Pada waktu ulang tahun Stevany, semua folder akan di zip dengan format nama Lopyu_Stevany.zip
-2. Ulang Tahun Stevany : 09 April Pukul 22.22 WIB
+- Ulang Tahun Stevany : 09 April Pukul 22.22 WIB
 ```
 if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 22 && t->tm_min == 22 && t->tm_sec == 0){
   child14 = fork();
