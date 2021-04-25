@@ -124,7 +124,7 @@ if (t->tm_mon+1 == 4 && t->tm_mday == 9 && t->tm_hour == 22 && t->tm_min == 22 &
       }
   }
 ```
-2. Semua folder akan di delete sehingga hanya menyisakan file Lopyu_Stevany.zip
+2. Kemudian semua folder akan di delete sehingga hanya menyisakan file Lopyu_Stevany.zip
 ```
 while (wait(&status11) > 0);
  child16 = fork();
