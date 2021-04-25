@@ -12,6 +12,8 @@
 #include <fcntl.h>
 #include <errno.h>
 
+int sign;
+
 void cipherCrypt(char msg[], int key)
 {
     for(int j = 0; msg[j] != '\0'; ++j)
@@ -41,7 +43,7 @@ void cipherCrypt(char msg[], int key)
 
 void daemonLurr()
 {
-    pid_t pid, sid;
+	pid_t pid, sid;
     pid = fork();
     if(pid < 0)
     {
@@ -68,32 +70,10 @@ void daemonLurr()
     close(STDERR_FILENO);
 }
 
-void createDir(char awowo[])
-{
-    pid_t child_id;
-    time_t rawtime;
-    struct tm * timenow;
-
-    time (&rawtime);
-    timenow = localtime(&rawtime);
-    // char awowo[40];
-    strftime(awowo, 40, "%Y-%m-%d_%H:%M:%S" , timenow);
-
-    child_id = fork();
-    if (child_id < 0)
-    {
-        exit(0);
-    }
-    if(child_id==0)
-    {
-        char *argv[] = {"mkdir", awowo, NULL};
-        execv("/bin/mkdir", argv);
-    }
-}
-
 void downloadPic(char awowo[])
 {
     int statuslur;
+    // char link[100];
     pid_t child_id;
     child_id = fork();
     if(child_id<0)
@@ -110,7 +90,7 @@ void downloadPic(char awowo[])
             time (&rawtime);
             timenow = localtime(&rawtime);
             char picname[100];
-	    char link[100];
+            char link[100];
             strftime(picname, 100, "%Y-%m-%d_%H:%M:%S", timenow);
             sprintf(link , "https://picsum.photos/%ld", (rawtime % 1000) + 50);
             pid_t child_id_pic;
@@ -127,7 +107,7 @@ void downloadPic(char awowo[])
             sleep(5);
         }
         while(wait(&statuslur)>0);
-        char msg_info[100] = "Download Complete";
+        char msg_info[100] = "Download Success";
         cipherCrypt(msg_info, 5);
 
         FILE* downloadstatus = fopen("status.txt", "w");
@@ -136,45 +116,138 @@ void downloadPic(char awowo[])
         chdir("..");
     }
 }
-void createKiller()
+
+void createZip(char awowo[])
 {
-    FILE* killer;
-    killer = fopen("killer.sh", "w");
-    fprintf(killer, "#!/bin/bash\npkill -f soal3\necho \'soal3 proccess have been killed!\'");
-    fclose(killer);
+    char zipname[100];
+    strcpy(zipname, awowo);
+    strcat(zipname, ".zip");
+    pid_t child_id;
+    child_id = fork();
+    if(child_id < 0) exit(0);
+    if(child_id == 0)
+    {
+        char *argv[] = {"zip", "-r", zipname, awowo, NULL};
+        execv("/usr/bin/zip", argv);
+    }
 }
 
-void get_popen()
+void deleteDir(char awowo[])
 {
-    FILE *pf;
-    char command[20];
-    
-    sprintf(command, "ps -aux");
-    pf = popen(command, "r");
-    if (pclose(pf) != 0)
+    pid_t child_id;
+    child_id = fork();
+    if(child_id < 0) exit(0);
+    if(child_id == 0)
     {
-        fprintf(stderr, "Error: Failed to close command stream!\n");
+        char *argv[] = {"rm", "-r", awowo, NULL};
+        execv("/bin/rm", argv);
     }
-    return;
+}
+
+void createDir(char awowo[])
+{
+    pid_t child_id, child_id2;
+    time_t rawtime;
+    struct tm * timenow;
+    int statDir, statEnc, statZip;
+
+    time (&rawtime);
+    timenow = localtime(&rawtime);
+    // char awowo[40];
+    strftime(awowo, 40, "%Y-%m-%d_%H:%M:%S" , timenow);
+
+    child_id = fork();
+    if (child_id < 0)
+    {
+        exit(0);
+    }
+    if(child_id==0)
+    {
+        if(fork() == 0)
+        {
+            char *argv[] = {"mkdir", awowo, NULL};
+            execv("/bin/mkdir", argv);
+        }
+        else
+        {
+            while(wait(&statDir)>0);
+            downloadPic(awowo);
+
+            while(wait(&statEnc)>0);
+            createZip(awowo);
+
+            while(wait(&statZip)>0);
+            deleteDir(awowo);
+
+            // if(sign == 0) break;
+        }
+    }
+}
+
+void changeSign()
+{
+    sign = 0;
+}
+
+void createKiller(int x)
+{
+    if(x == 1)
+    {
+        FILE* killer;
+        killer = fopen("killer.sh", "w");
+        fprintf(killer, "#!/bin/bash\npkill -f soal3\necho \'Proccess have been killed!\'\nrm killer.sh");
+        fclose(killer);
+    }
+    if(x == 2)
+    {
+        FILE* killer;
+        killer = fopen("killer.sh", "w");
+        fprintf(killer, "#!/bin/bash\nkillall -15 soal3\necho \'Proccess have been killed!\'\nrm killer.sh");
+        fclose(killer);
+        signal(SIGTERM, changeSign);
+    }
 }
 
 int main(int argc, char* argv[])
 {
-    int status, status1, endstatus;
-    createKiller();
+    // createKiller();
+    if(argv[1][1] == 'z')
+    {
+        createKiller(1);
+    }
+    if(argv[1][1] == 'x')
+    {
+        createKiller(2);
+    }
+    // else
+    // {
+    //     printf("-z / -x\n");
+    //     exit(0);
+    // }
 
+    pid_t child_id;
+    child_id = fork();
+    if(child_id < 0)
+        exit(0);
+    if(child_id == 0)
+    {
+        char *argv[] = {"chmod", "u+x", "killer.sh", NULL};
+        execv("/bin/chmmod", argv);
+    }
+
+    int status;
     while(wait(&status) > 0);
 
     daemonLurr();
 
-    while(1)
+    sign = 1;
+    while(sign)
     {
         char foldname[40];
         createDir(foldname);
-        while(wait(&status1)>0);
-        downloadPic(foldname);
-        
-        while(wait(&endstatus)>0);
+
+        if(sign == 0) break;
+
         sleep(40);
     }
 }
