@@ -12,7 +12,375 @@
 ## Soal 3 ##
 ### Pengerjaan ###
 #### Soal 3a. ####
+1. Diminta untuk membuat sebuah folder tiap 40s dengan format nama timestamp sekarang
+2. Fungsi yang dijalankan = 
+```
+void createDir(char awowo[])
+{
+    pid_t child_id, child_id2;
+    time_t rawtime;
+    struct tm * timenow;
+
+    time (&rawtime);
+    timenow = localtime(&rawtime);
+    // char awowo[40];
+    strftime(awowo, 40, "%Y-%m-%d_%H:%M:%S" , timenow);
+
+    child_id = fork();
+    if (child_id < 0)
+    {
+        exit(0);
+    }
+    if(child_id==0)
+    {
+        char *argv[] = {"mkdir", awowo, NULL};
+        execv("/bin/mkdir", argv);
+    }
+}
+```
+3. Untuk pemanggilan tiap 40s maka di main dijalankan fungsi tersebut =
+```
+int main(int argc, char* argv[])
+{
+    int status;
+    while(wait(&status) > 0);
+
+    daemonLurr(); //fungsi pemanggilan daemon
+
+    while(1)
+    {
+        char foldname[40];
+        createDir(foldname);
+
+        sleep(40);
+    }
+}
+```
+4. Dokumentasi = 
+
+![image](https://user-images.githubusercontent.com/63279983/115980531-a0c81f00-a5b7-11eb-9f2a-c03804360eff.png)
+
+
 #### Soal 3b. ####
+1. Diminta mendownload gambar pada website picsum.photos tiap 5 detik dan diberi nama sesuai timestamp
+2. Fungsi yang dijalankan = 
+```
+void downloadPic(char awowo[])
+{
+    int statuslur;
+    pid_t child_id;
+    child_id = fork();
+    if(child_id<0)
+    {
+        exit(0);
+    }
+    if(child_id == 0)
+    {
+        chdir(awowo);
+        for(int i=0;i<10;i++){
+            time_t rawtime;
+            struct tm * timenow;
+
+            time (&rawtime);
+            timenow = localtime(&rawtime);
+            char picname[100];
+            char link[100];
+            strftime(picname, 100, "%Y-%m-%d_%H:%M:%S", timenow);
+            sprintf(link , "https://picsum.photos/%ld", (rawtime % 1000) + 50);
+            pid_t child_id_pic;
+            child_id_pic = fork();
+            if(child_id_pic<0)
+            {
+                exit(0);
+            }
+            if(child_id_pic==0)
+            {
+                char *argv[]= {"wget", link, "-O", picname, "-o", "/dev/null", NULL};
+                execv("/usr/bin/wget", argv);
+            }
+            sleep(5);
+        }
+        chdir("..");
+    }
+}
+```
+3. Fungsi tersebut meminta sebuah variabel 'awowo' yang berarti meminta dimana folder tempat kita akan mendownload gambar yang diinginkan
+4. Seperti pada pembuatan folder, kita menggunakan fungsi sleep(5) yang berarti akan mengulang fungsi tersebut dengan delay 5 detik
+5. Pemanggilan fungsi download terdapat didalam fungsi pembuatan folder =
+```
+void createDir(char awowo[])
+{
+    pid_t child_id, child_id2;
+    time_t rawtime;
+    struct tm * timenow;
+    int statDir;
+
+    time (&rawtime);
+    timenow = localtime(&rawtime);
+    strftime(awowo, 40, "%Y-%m-%d_%H:%M:%S" , timenow);
+
+    child_id = fork();
+    if (child_id < 0)
+    {
+        exit(0);
+    }
+    if(child_id==0)
+    {
+        if(fork() == 0)
+        {
+            char *argv[] = {"mkdir", awowo, NULL};
+            execv("/bin/mkdir", argv);
+        }
+        else
+        {
+            while(wait(&statDir)>0);
+            downloadPic(awowo);
+        }
+    }
+}
+```
+6. dokumentasi = 
+
+![image](https://user-images.githubusercontent.com/63279983/115980652-8b072980-a5b8-11eb-9d73-752ad3b7c09a.png)
+
+
 #### Soal 3c. ####
+1. Membuat sebuah file status.txt yang didalamnya tertulis "Download Success" yang terenskripsi dengan metode cipher, setelah itu folder tersebut di zip dan di delete
+2. Untuk fungsi pembuatan file status.txt = 
+```
+char msg_info[100] = "Download Success";
+cipherCrypt(msg_info, 5); // 5 karena kita akan men-shift tiap huruf sebanyak 5
+
+FILE* downloadstatus = fopen("status.txt", "w");
+fprintf(downloadstatus,"%s", msg_info);
+```
+3. Untuk fungsi enkripsi cipher =
+```
+void cipherCrypt(char msg[], int key)
+{
+    for(int j = 0; msg[j] != '\0'; ++j)
+    {
+        char ch = msg[j];
+        if(ch >= 'a' && ch <= 'z')
+        {
+            ch = ch + key;
+            if(ch > 'z')
+            {
+                ch = ch - 'z' + 'a' - 1;
+            }
+            msg[j] = ch;
+        }
+
+        else if(ch >= 'A' && ch <= 'Z')
+        {
+            ch = ch + key;
+            if(ch > 'Z')
+            {
+                ch = ch - 'Z' + 'A' - 1;
+            }
+            msg[j] = ch;
+        }
+    }
+}
+```
+4. Fungsi untuk pembuatan zip file =
+```
+void createZip(char awowo[]) // awowo sebagai nama file yang akan di zip
+{
+    char zipname[100];
+    strcpy(zipname, awowo);
+    strcat(zipname, ".zip");
+    pid_t child_id;
+    child_id = fork();
+    if(child_id < 0) exit(0);
+    if(child_id == 0)
+    {
+        char *argv[] = {"zip", "-r", zipname, awowo, NULL};
+        execv("/usr/bin/zip", argv);
+    }
+}
+```
+5. Fungsi untuk menghapus file =
+```
+void createZip(char awowo[]) // awowo sebagai nama file yang akan di zip
+{
+    char zipname[100];
+    strcpy(zipname, awowo);
+    strcat(zipname, ".zip");
+    pid_t child_id;
+    child_id = fork();
+    if(child_id < 0) exit(0);
+    if(child_id == 0)
+    {
+        char *argv[] = {"zip", "-r", zipname, awowo, NULL};
+        execv("/usr/bin/zip", argv);
+    }
+}
+```
+6. Untuk pemanggilan fungsi terdapat didalam fungsi pembuatan folder dibawah pemanggilan fungsi download gambar = 
+```
+void createDir(char awowo[])
+{
+    pid_t child_id, child_id2;
+    time_t rawtime;
+    struct tm * timenow;
+    int statDir, statEnc, statZip;
+
+    time (&rawtime);
+    timenow = localtime(&rawtime);
+    strftime(awowo, 40, "%Y-%m-%d_%H:%M:%S" , timenow);
+
+    child_id = fork();
+    if (child_id < 0)
+    {
+        exit(0);
+    }
+    if(child_id==0)
+    {
+        if(fork() == 0)
+        {
+            char *argv[] = {"mkdir", awowo, NULL};
+            execv("/bin/mkdir", argv);
+        }
+        else
+        {
+            while(wait(&statDir)>0);
+            downloadPic(awowo);
+
+            while(wait(&statEnc)>0);
+            createZip(awowo);
+
+            while(wait(&statZip)>0);
+            deleteDir(awowo);
+        }
+    }
+}
+```
+7. Dokumentaasi =
+
+![image](https://user-images.githubusercontent.com/63279983/115980871-28169200-a5ba-11eb-8650-564d8e63b287.png)
+
+![image](https://user-images.githubusercontent.com/63279983/115980879-349aea80-a5ba-11eb-9e0a-cce78aeba80f.png)
+
+![image](https://user-images.githubusercontent.com/63279983/115980887-41b7d980-a5ba-11eb-90da-c3ce8f719a50.png)
+
+
 #### Soal 3d. ####
+1. Membuat killer program yang akan menghentikan seluruh proses soal3 dan merupakan program bash
+2. Fungsi yang dijalankan =
+```
+void createKiller()
+{
+    FILE* killer;
+    killer = fopen("killer.sh", "w");
+    fprintf(killer, "#!/bin/bash\npkill -f soal3\necho \'Proccess have been killed!\'\nrm killer.sh");
+    fclose(killer);
+}
+```
+3. Pemanggilan dilakukan pada main =
+```
+int main(int argc, char* argv[])
+{
+    createKiller();
+    ...
+}
+```
+4. Dokumentassi =
+
+![image](https://user-images.githubusercontent.com/63279983/115981012-04078080-a5bb-11eb-83bf-69ef32225d65.png)
+
+![image](https://user-images.githubusercontent.com/63279983/115981025-197caa80-a5bb-11eb-956b-60ef11f1782e.png)
+
+
 #### Soal 3e. ####
+1. Mmebuat argumen jika z maka proccess harus langsung dimatikan, jika x maka menunggu penghapusan file selesai baru mematikan proccess
+2. Fungsi yang dijalankan = 
+```
+int main(int argc, char* argv[])
+{
+    if(argv[1][1] == 'z')
+    {
+        createKiller(1);
+    }
+    if(argv[1][1] == 'x')
+    {
+        createKiller(2);
+    }
+    ...
+```
+3. Disini kita memodifikasi fungsi createKiller() dengan menambahkan sebuah passingan value, jika argumen z maka pass value 1, jika x maka 2
+4. Fungsi createKiller setelah dimodifikasi =
+```
+void createKiller(int x)
+{
+    if(x == 1)
+    {
+        FILE* killer;
+        killer = fopen("killer.sh", "w");
+        fprintf(killer, "#!/bin/bash\npkill -f soal3\necho \'Proccess have been killed!\'\nrm killer.sh");
+        fclose(killer);
+    }
+    if(x == 2)
+    {
+        FILE* killer;
+        killer = fopen("killer.sh", "w");
+        fprintf(killer, "#!/bin/bash\nkillall -15 soal3\necho \'Proccess have been killed!\'\nrm killer.sh");
+        fclose(killer);
+        signal(SIGTERM, changeSign);
+    }
+}
+```
+5. Kita juga mendefinisikan sebuah signal untuk menghentikan proccess sebagai variable global dan mendeklarasikan fungsi untuk mengubah signal =
+```
+int sign;
+
+void changeSign()
+{
+    sign = 0;
+}
+```
+6. Lalu pada main kita mengedit beberapa code menjadi =
+```
+int main(int argc, char* argv[])
+{
+    if(argv[1][1] == 'z')
+    {
+        createKiller(1);
+    }
+    if(argv[1][1] == 'x')
+    {
+        createKiller(2);
+    }
+
+    pid_t child_id;
+    child_id = fork();
+    if(child_id < 0)
+        exit(0);
+    if(child_id == 0)
+    {
+        char *argv[] = {"chmod", "u+x", "killer.sh", NULL};
+        execv("/bin/chmmod", argv);
+    }
+    int status;
+    while(wait(&status) > 0);
+    daemonLurr();
+    sign = 1;
+    while(sign)
+    {
+        char foldname[40];
+        createDir(foldname);
+
+        if(sign == 0) break;
+
+        sleep(40);
+    }
+}
+```
+7. Dokumentasi = 
+
+![image](https://user-images.githubusercontent.com/63279983/115981243-9a887180-a5bc-11eb-8b4b-2c0f2943e661.png)
+
+![image](https://user-images.githubusercontent.com/63279983/115981293-d4597800-a5bc-11eb-8a8b-ce4c416ee253.png)
+
+![image](https://user-images.githubusercontent.com/63279983/115981309-f18e4680-a5bc-11eb-91be-fa552904fc3e.png)
+
