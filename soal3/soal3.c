@@ -219,21 +219,6 @@ int main(int argc, char* argv[])
     {
         createKiller(2);
     }
-    // else
-    // {
-    //     printf("-z / -x\n");
-    //     exit(0);
-    // }
-
-    pid_t child_id;
-    child_id = fork();
-    if(child_id < 0)
-        exit(0);
-    if(child_id == 0)
-    {
-        char *argv[] = {"chmod", "u+x", "killer.sh", NULL};
-        execv("/bin/chmmod", argv);
-    }
 
     int status;
     while(wait(&status) > 0);
